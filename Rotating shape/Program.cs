@@ -36,7 +36,27 @@ namespace Rotating_shape
             float cos = (float)Math.Cos(radians);
             float sin = (float)Math.Sin(radians);
             // Rotate each point
-            shape.a.x *= cos + sin;
+            point tempA = new point(shape.a.x, shape.a.y);
+            point tempB = new point(shape.b.x, shape.b.y);
+            point tempC = new point(shape.c.x, shape.c.y);
+            point tempD = new point(shape.d.x, shape.d.y);
+
+            tempA.x = shape.a.x * cos - shape.a.y * sin;
+            tempA.y = shape.a.x * sin + shape.a.y * cos;
+            tempB.x = shape.b.x * cos - shape.b.y * sin;
+            tempB.y = shape.b.x * sin + shape.b.y * cos;
+            tempC.x = shape.c.x * cos - shape.c.y * sin;
+            tempC.y = shape.c.x * sin + shape.c.y * cos;
+            tempD.x = shape.d.x * cos - shape.d.y * sin;
+            tempD.y = shape.d.x * sin + shape.d.y * cos;
+
+            // Update the shape points
+            shape.a = tempA;
+            shape.b = tempB;
+            shape.c = tempC;
+                shape.d = tempD;
+
+            
 
         }
         static void Main(string[] args)
@@ -55,7 +75,8 @@ namespace Rotating_shape
                 Rotate(a, square);
                 WriteAt("#", square);
                 Console.ReadLine();
-                a += 10;
+                Console.Clear();
+                a += 1;
             }
            
 
