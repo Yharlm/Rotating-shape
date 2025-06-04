@@ -35,11 +35,29 @@ namespace Rotating_shape
                 int s = size;
                 
                 a = new point(-1, -1, s);
-                b = new point(1, -1, s);
+                b = new point(0.5, -0.5, s);
                 c = new point(1, 1, s);
-                d = new point(-1, 1, s);
+                d = new point(-0.5, 0.5, s);
             }
         }
+        class Polygon
+        {
+            public List<point> Points= new List<point>();
+            public int x, y;
+            public int length = 1;
+
+            public Polygon(int size)
+            {
+
+                int s = size;
+
+                Points.Add( new point(-1, -1, s));
+                Points.Add(new point(1, -1, s));
+                Points.Add(new point(1, 1, s));
+                Points.Add(new point(-1, 2, s));
+            }
+        }
+
 
         static void Rotate(float angle, shape shape)
         {
@@ -82,7 +100,7 @@ namespace Rotating_shape
                     time += 0.001f; // Increment time by 1 millisecond
                 }
             });
-
+            Console.ForegroundColor = ConsoleColor.Blue;
 
             shape square = new shape(21);
             shape square2 = new shape(17);
@@ -97,20 +115,45 @@ namespace Rotating_shape
             square4.x = 70;
             square4.y = 60;
             Console.ReadLine();
-            while(true)
+            float speed = 0f;
+            var input = Console.ReadKey().Key;
+            while (true)
             {
-
                 
+                if (Console.KeyAvailable)
+                {
+                    input = Console.ReadKey(true).Key;
+                }
+
+
+                Rotate(speed, square);
+                if (input == ConsoleKey.E)
+                {
+                    speed += 0.1f;
+                    
+                }
+                else if (input == ConsoleKey.Q)
+                {
+                    speed -= 0.1f;
+                }
+                else
+                {
+                    if (speed > 0)
+                    {
+                        speed -= 0.1f;
+                    }
+                    else if(speed < 0)
+                    {
+                        speed += 0.1f;
+                    }
+                }
+                input = ConsoleKey.None;
                 Thread.Sleep(10);
                 Console.Clear();
-                Rotate(5, square);
-                Rotate(-2, square2);
+                
+               
                 WriteAt("██", square);
-                WriteAt("██", square2);
-                Rotate(3, square3);
-                Rotate(1, square4);
-                WriteAt("██", square3);
-                WriteAt("██", square4);
+                
 
 
 
@@ -138,6 +181,7 @@ namespace Rotating_shape
             drawLine(((int)shape.b.x + shape.x), (int)shape.b.y + shape.y, ((int)shape.c.x + shape.x), (int)shape.c.y + shape.y);
             drawLine(((int)shape.c.x + shape.x), (int)shape.c.y + shape.y, ((int)shape.d.x + shape.x), (int)shape.d.y + shape.y);
             drawLine(((int)shape.d.x + shape.x), (int)shape.d.y + shape.y, ((int)shape.a.x + shape.x), (int)shape.a.y + shape.y);
+
 
         }
 
