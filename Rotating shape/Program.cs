@@ -13,17 +13,30 @@ namespace Rotating_shape
             }
 
         }
-
+        class Connection : shape
+        {
+            public Connection(point a, point b)
+            {
+                A = a;
+                B = b;
+            }
+            public point A;
+            public point B;
+        }
         class shape
         {
             public List<point> points = new List<point>();
+            public List<Connection> Edges = new List<Connection>();
 
             public void addPoint(float x, float y, float z)
             {
                 points.Add(new point(x, y, z));
             }
 
-
+            public void addEdge(int a, int b)
+            {
+                Edges.Add(new Connection(points[a], points[b]));
+            }
 
             public void Rotate(float angleX, float angleY, float angleZ)
             {
@@ -40,7 +53,7 @@ namespace Rotating_shape
                 }
             }
 
-            public void drawLine(int B,int A,Vector2 Offset)
+            public void drawLine(int B, int A, Vector2 Offset)
             {
                 int a = A;
                 int b = B;
@@ -51,11 +64,15 @@ namespace Rotating_shape
 
         }
 
-
+        /*
+         
+          
+         
+        */
 
         static void Main(string[] args)
         {
-            int lenght  = 20;
+            int lenght = 20;
             shape cube = new shape();
             cube.addPoint(-lenght, -lenght, -lenght);
             cube.addPoint(lenght, -lenght, -lenght);
@@ -66,34 +83,92 @@ namespace Rotating_shape
             cube.addPoint(lenght, lenght, lenght);
             cube.addPoint(-lenght, lenght, lenght);
 
-            Vector2 Offset = new Vector2(lenght*2, lenght*2);
+            cube.addEdge(0, 1);
+            cube.addEdge(1, 2);
+            cube.addEdge(2, 3);
+            cube.addEdge(3, 0);
+            cube.addEdge(4, 5);
+            cube.addEdge(5, 6);
+            cube.addEdge(6, 7);
+            cube.addEdge(7, 4);
+            cube.addEdge(0, 4);
+            cube.addEdge(1, 5);
+            cube.addEdge(2, 6);
+            cube.addEdge(3, 7);
+
+            Vector3 Orientation = new Vector3(0, 0, 0);
+            Vector2 Offset = new Vector2(lenght * 2, lenght * 2);
             while (true)
             {
-                
-                cube.Rotate(0.01f, 0.1f, 0.1f);
-                foreach (point p in cube.points)
+                foreach (Connection C in cube.Edges.FindAll(x => float.Max(x.A.position.Z, x.B.position.Z) > lenght))
                 {
+                    int index = cube.Edges.IndexOf(C);
+                    if (index > 0 && index < cube.Edges.Count)
+                    {
+                        cube.drawLine(index - 1, index, Offset);
+                    }
+
+                }
+                cube.Rotate(Orientation.Y, Orientation.X, Orientation.Z);
+
+                //cube.drawLine(0, 1, Offset);
+                //cube.drawLine(1, 2, Offset);
+                //cube.drawLine(2, 3, Offset);
+                //cube.drawLine(3, 0, Offset);
+                //cube.drawLine(4, 5, Offset);
+                //cube.drawLine(5, 6, Offset);
+                //cube.drawLine(6, 7, Offset);
+                //cube.drawLine(7, 4, Offset);
+                //cube.drawLine(0, 4, Offset);
+                //cube.drawLine(1, 5, Offset);
+                //cube.drawLine(2, 6, Offset);
+                //cube.drawLine(3, 7, Offset);
+                foreach (point p in cube.points.FindAll(x => x.position.Z > -lenght))
+                {
+                    int index = cube.points.IndexOf(p);
+
+
                     float z = p.position.Z / 2;
                     WriteAt(p.position.X + Offset.X, p.position.Y + Offset.Y);
 
-
-                                                                                                                                   
                 }
                 
-                cube.drawLine(0, 1, Offset);
-                cube.drawLine(1, 2, Offset);
-                cube.drawLine(2, 3, Offset);
-                cube.drawLine(3, 0, Offset);
-                cube.drawLine(4, 5, Offset);
-                cube.drawLine(5, 6, Offset);
-                cube.drawLine(6, 7, Offset);
-                cube.drawLine(7, 4, Offset);
-                cube.drawLine(0, 4, Offset);
-                cube.drawLine(1, 5, Offset);
-                cube.drawLine(2, 6, Offset);
-                cube.drawLine(3, 7, Offset);
 
+                // This line is not necessary, but it can be used to force the evaluation of the points if needed.
 
+                if (Console.KeyAvailable)
+                {
+                    float speed = 0.001f;
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    if (key.Key == ConsoleKey.D)
+                    {
+                        Orientation.X += speed;
+                    }
+                    else if (key.Key == ConsoleKey.A)
+                    {
+                        Orientation.X -= speed;
+                    }
+                    else if (key.Key == ConsoleKey.W)
+                    {
+                        Orientation.Y -= speed;
+                    }
+                    else if (key.Key == ConsoleKey.S)
+                    {
+                        Orientation.Y += speed;
+                    }
+                    else if (key.Key == ConsoleKey.Q)
+                    {
+                        Orientation.Z += speed;
+                    }
+                    else if (key.Key == ConsoleKey.E)
+                    {
+                        Orientation.Z -= speed;
+                    }
+                    else if (key.Key == ConsoleKey.Escape)
+                    {
+                        Orientation = new Vector3(0, 0, 0);
+                    }
+                }
 
 
 
@@ -140,7 +215,7 @@ namespace Rotating_shape
             }
         }
 
-        
+
 
     }
 }
