@@ -27,7 +27,7 @@ namespace Rotating_shape
         {
             public List<point> points = new List<point>();
             public List<Connection> Edges = new List<Connection>();
-
+            public float Fov =1.3f; // Field of view, used to scale the Z coordinate for perspective effect
             public void addPoint(float x, float y, float z)
             {
                 points.Add(new point(x, y, z));
@@ -62,13 +62,32 @@ namespace Rotating_shape
             }
             public void drawLine(Connection C, Vector2 Offset)
             {
-                var a = C.A;
+                var a = C.A.position;
+                var b = C.B.position;
+                float Za = 1;
+                float Zb = 1;
                 
-
-                var b = C.B;
                 
+                if(a.Z < 0 )
+                {
+                    Za = Fov;
+                }
+                if(b.Z < 0)
+                {
+                   
+                    Zb = Fov;
+                }
+                if (a.Z < 0)
+                {
+                    Za = Fov;
+                }
+                if (b.Z < 0)
+                {
 
-                DrawLine((int)(a.position.X + Offset.X) * a.position.Z, (int)(a.position.Y + Offset.Y) * a.position.Z, (int)(b.position.X + Offset.X), (int)(b.position.Y + Offset.Y));
+                    Zb = Fov;
+                }
+
+                DrawLine((int)(a.X * Za + Offset.X), (int)(a.Y * Za + Offset.Y), (int)(b.X * Zb + Offset.X ), (int)(b.Y * Zb + Offset.Y));
 
             }
 
@@ -124,8 +143,8 @@ namespace Rotating_shape
 
                 foreach (Connection C in cube.Edges)
                 {
-                    if(C.A.position.Z > -lenght && C.B.position.Z > -lenght/0.905)
-                    cube.drawLine(C, Offset);
+                    //if (C.A.position.Z > -lenght && C.B.position.Z > -lenght / 0.905)
+                        cube.drawLine(C, Offset);
                 }
                 //cube.drawLine(0, 1, Offset);
                 //cube.drawLine(1, 2, Offset);
@@ -141,7 +160,7 @@ namespace Rotating_shape
                 //cube.drawLine(3, 7, Offset);
                 var ListToDisplay = cube.Edges;
                 //var ListToDisplay = cube.Edges.FindAll(x => float.Max(x.A.position.Z, x.B.position.Z) > 0);
-                
+
 
                 // This line is not necessary, but it can be used to force the evaluation of the points if needed.
 
