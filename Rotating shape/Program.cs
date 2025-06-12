@@ -60,6 +60,17 @@ namespace Rotating_shape
                 DrawLine((int)(points[a].position.X + Offset.X), (int)(points[a].position.Y + Offset.Y), (int)(points[b].position.X + Offset.X), (int)(points[b].position.Y + Offset.Y));
 
             }
+            public void drawLine(Connection C, Vector2 Offset)
+            {
+                var a = C.A;
+                
+
+                var b = C.B;
+                
+
+                DrawLine((int)(a.position.X + Offset.X) * a.position.Z, (int)(a.position.Y + Offset.Y) * a.position.Z, (int)(b.position.X + Offset.X), (int)(b.position.Y + Offset.Y));
+
+            }
 
 
         }
@@ -100,17 +111,22 @@ namespace Rotating_shape
             Vector2 Offset = new Vector2(lenght * 2, lenght * 2);
             while (true)
             {
-                foreach (Connection C in cube.Edges.FindAll(x => float.Max(x.A.position.Z, x.B.position.Z) > lenght))
-                {
-                    int index = cube.Edges.IndexOf(C);
-                    if (index > 0 && index < cube.Edges.Count)
-                    {
-                        cube.drawLine(index - 1, index, Offset);
-                    }
+                //foreach (Connection C in cube.Edges.FindAll(x => float.Max(x.A.position.Z, x.B.position.Z) > 0))
+                //{
+                //    int index = cube.Edges.IndexOf(C);
+                //    if (index > 0 && index < cube.Edges.FindAll(x => float.Max(x.A.position.Z, x.B.position.Z) > 0).Count())
+                //    {
+                //        cube.drawLine(index - 1, index, Offset);
+                //    }
 
-                }
+                //}
                 cube.Rotate(Orientation.Y, Orientation.X, Orientation.Z);
 
+                foreach (Connection C in cube.Edges)
+                {
+                    if(C.A.position.Z > -lenght && C.B.position.Z > -lenght/0.905)
+                    cube.drawLine(C, Offset);
+                }
                 //cube.drawLine(0, 1, Offset);
                 //cube.drawLine(1, 2, Offset);
                 //cube.drawLine(2, 3, Offset);
@@ -123,15 +139,8 @@ namespace Rotating_shape
                 //cube.drawLine(1, 5, Offset);
                 //cube.drawLine(2, 6, Offset);
                 //cube.drawLine(3, 7, Offset);
-                foreach (point p in cube.points.FindAll(x => x.position.Z > -lenght))
-                {
-                    int index = cube.points.IndexOf(p);
-
-
-                    float z = p.position.Z / 2;
-                    WriteAt(p.position.X + Offset.X, p.position.Y + Offset.Y);
-
-                }
+                var ListToDisplay = cube.Edges;
+                //var ListToDisplay = cube.Edges.FindAll(x => float.Max(x.A.position.Z, x.B.position.Z) > 0);
                 
 
                 // This line is not necessary, but it can be used to force the evaluation of the points if needed.
