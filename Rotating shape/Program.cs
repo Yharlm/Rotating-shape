@@ -64,28 +64,28 @@ namespace Rotating_shape
             {
                 var a = C.A.position;
                 var b = C.B.position;
-                float Za = 1;
-                float Zb = 1;
+                float Za = Fov + a.Z / 100;
+                float Zb = Fov + b.Z / 100;
                 
                 
-                if(a.Z < 0 )
-                {
-                    Za = Fov;
-                }
-                if(b.Z < 0)
-                {
+                //if(a.Z < 0 )
+                //{
+                //    Za = Fov;
+                //}
+                //if(b.Z < 0)
+                //{
                    
-                    Zb = Fov;
-                }
-                if (a.Z < 0)
-                {
-                    Za = Fov;
-                }
-                if (b.Z < 0)
-                {
+                //    Zb = Fov;
+                //}
+                //if (a.Z < 0)
+                //{
+                //    Za = Fov;
+                //}
+                //if (b.Z < 0)
+                //{
 
-                    Zb = Fov;
-                }
+                //    Zb = Fov;
+                //}
 
                 DrawLine((int)(a.X * Za + Offset.X), (int)(a.Y * Za + Offset.Y), (int)(b.X * Zb + Offset.X ), (int)(b.Y * Zb + Offset.Y));
 
