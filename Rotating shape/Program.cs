@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 
 namespace Rotating_shape
 {
@@ -35,10 +35,10 @@ namespace Rotating_shape
         }
         class shape
         {
-            public Vector3 Position = new Vector3(0, 0, 0); // Position of the shape in 3D space
+            public Vector3 Position; // Position of the shape in 3D space
             public List<point> points = new List<point>();
             public List<Connection> Edges = new List<Connection>();
-            public float Fov =80f; // Field of view, used to scale the Z coordinate for perspective effect
+            public float Fov = 80f; // Field of view, used to scale the Z coordinate for perspective effect
             public void addPoint(float x, float y, float z)
             {
                 points.Add(new point(x, y, z));
@@ -91,7 +91,7 @@ namespace Rotating_shape
             public void Sphere(Vector3 Size)
             {
                 int sides = 10; // Number of segments in the sphere
-                for (int i = 0;i< sides; i ++)
+                for (int i = 0; i < sides; i++)
                 {
                     for (int j = 0; j < sides; j++)
                     {
@@ -160,26 +160,8 @@ namespace Rotating_shape
                 var b = C.B.position + Position;
                 float Za = 1 + a.Z / Fov;
                 float Zb = 1 + b.Z / Fov;
-                
-                
-                //if(a.Z < 0 )
-                //{
-                //    Za = Fov;
-                //}
-                //if(b.Z < 0)
-                //{
 
-                //    Zb = Fov;
-                //}
-                //if (a.Z < 0)
-                //{
-                //    Za = Fov;
-                //}
-                //if (b.Z < 0)
-                //{
 
-                //    Zb = Fov;
-                //}
 
                 DrawLine((int)(a.X * Za + Offset.X), (int)(a.Y * Za + Offset.Y), (int)(b.X * Zb + Offset.X), (int)(b.Y * Zb + Offset.Y));
 
@@ -193,7 +175,7 @@ namespace Rotating_shape
           
          
         */
-        
+
 
         float Pithagoras(float a, float b)
         {
@@ -202,181 +184,188 @@ namespace Rotating_shape
         static void Main(string[] args)
         {
             int lenght = 5;
-            shape cube = new shape();
-            //cube.addPoint(-lenght, -lenght, -lenght);
-            //cube.addPoint(lenght, -lenght, -lenght);
-            //cube.addPoint(lenght, lenght, -lenght);
-            //cube.addPoint(-lenght, lenght, -lenght);
-            //cube.addPoint(-lenght, -lenght, lenght);
-            //cube.addPoint(lenght, -lenght, lenght);
-            //cube.addPoint(lenght, lenght, lenght);
-            //cube.addPoint(-lenght, lenght, lenght);
 
-            //cube.addEdge(0, 1);
-            //cube.addEdge(1, 2);
-            //cube.addEdge(2, 3);
-            //cube.addEdge(3, 0);
-            //cube.addEdge(4, 5);
-            //cube.addEdge(5, 6);
-            //cube.addEdge(6, 7);
-            //cube.addEdge(7, 4);
-            //cube.addEdge(0, 4);
-            //cube.addEdge(1, 5);
-            //cube.addEdge(2, 6);
-            //cube.addEdge(3, 7);
 
-            cube.addPoint(lenght/2,,,)
 
-            Console.ReadLine();
+
+            List<shape> shapes = new List<shape>();
+
+            shape Cube = new shape();
+            Cube.Cube(new Vector3(40, 30, 40));
+            
+            shapes.Add(Cube);
+            Cube = new shape();
+            Cube.Position = new Vector3(0, 50, 0);
+            Cube.Cube(new Vector3(10, 30, 10));
+            shapes.Add(Cube);
+
+
+
+
+
+
+            //cube.addPoint(lenght/2,,,)
+
+            //Console.ReadLine();
             Vector3 Orientation = new Vector3(0, 0, 0);
-            Vector2 Offset = new Vector2(200, 100);
+            Vector2 Offset = new Vector2(100, 60);
+            ConsoleKeyInfo key = new ConsoleKeyInfo();
+            int mode = 2;
+
+            foreach (var s in shapes)
+            {
+                Thread Print = new Thread(() =>
+                {
+                    while (true)
+                    {
+
+                        foreach (Connection C in s.Edges)
+                        {
+                            s.drawLine(C, Offset);
+                        }
+                    }
+                }
+                );
+                Print.Start();
+
+            }
+            float speed = 0.001f;
+            float MoveSpeed = 3f;
             while (true)
             {
-                foreach (point p in cube.points)
+                if (Console.KeyAvailable)
                 {
-                    Draw(p.position, Offset, 1);
-                }
-                //Console.WriteLine($"Point: {p.position}");
-            }
-            //foreach (Connection C in cube.Edges.FindAll(x => float.Max(x.A.position.Z, x.B.position.Z) > 0))
-            //{
-            //    int index = cube.Edges.IndexOf(C);
-            //    if (index > 0 && index < cube.Edges.FindAll(x => float.Max(x.A.position.Z, x.B.position.Z) > 0).Count())
-            //    {
-            //        cube.drawLine(index - 1, index, Offset);
-            //    }
+                    key = Console.ReadKey(true);
+                    foreach (shape cube in shapes)
+                    {
+                        
 
-                //}
-                WriteAt(Offset.X, Offset.Y); // Draw the origin point
 
-                        foreach (Connection C in shape.Edges)
+
+                        var ListToDisplay = cube.Edges;
+                        //var ListToDisplay = cube.Edges.FindAll(x => float.Max(x.A.position.Z, x.B.position.Z) > 0);
+                        cube.Rotate(Orientation.Y, Orientation.X, Orientation.Z);
+
+                        //foreach (Connection C in cube.Edges)
+                        //{
+                        //    cube.drawLine(C, Offset);
+                        //}
+
+
+
+
+
+                        if (key.Key == ConsoleKey.D1)
                         {
-                            //if (C.A.position.Z > -lenght && C.B.position.Z > -lenght / 0.905)
-                            shape.drawLine(C, Offset);
+                            mode = 1;
+                        }
+                        if (key.Key == ConsoleKey.D2)
+                        {
+                            mode = 2;
+                        }
+                        else if (key.Key == ConsoleKey.F)
+                        {
+                            cube.Fov += 1;
+                        }
+                        else if (key.Key == ConsoleKey.G)
+                        {
+                            cube.Fov -= 2;
                         }
 
+                        if (mode == 1)
+                        {
+                            if (key.Key == ConsoleKey.D)
+                            {
+                                Orientation.X += speed;
+                            }
+                            else if (key.Key == ConsoleKey.A)
+                            {
+                                Orientation.X -= speed;
+                            }
+                            else if (key.Key == ConsoleKey.W)
+                            {
+                                Orientation.Y -= speed;
+                            }
+                            else if (key.Key == ConsoleKey.S)
+                            {
+                                Orientation.Y += speed;
+                            }
+                            else if (key.Key == ConsoleKey.Q)
+                            {
+                                Orientation.Z += speed;
+                            }
+                            else if (key.Key == ConsoleKey.E)
+                            {
+                                Orientation.Z -= speed;
+                            }
+                            else if (key.Key == ConsoleKey.Escape)
+                            {
+                                Orientation = new Vector3(0, 0, 0);
+                            }
+                        }
+                        if (mode == 2)
+                        {
+
+                            if (key.Key == ConsoleKey.D)
+                            {
+                                cube.Position.X += MoveSpeed;
+                            }
+                            else if (key.Key == ConsoleKey.A)
+                            {
+                                cube.Position.X -= MoveSpeed;
+                            }
+                            else if (key.Key == ConsoleKey.W)
+                            {
+                                cube.Position.Y -= MoveSpeed;
+                            }
+                            else if (key.Key == ConsoleKey.S)
+                            {
+                                cube.Position.Y += MoveSpeed;
+                            }
+                            else if (key.Key == ConsoleKey.E)
+                            {
+                                cube.Position.Z += MoveSpeed;
+                            }
+                            else if (key.Key == ConsoleKey.Q)
+                            {
+                                cube.Position.Z -= MoveSpeed;
+                            }
+                        }
+
+                        
+
+
                     }
-                });
-                printer.Start();
+
+                    Console.Clear();
+                }
+                else
+                {
+                    
+                }
+
+
+
+
+                Thread.Sleep(10);
+                //Console.ReadLine();
+                
             }
 
-            while (true)
-            {
-
-                if (Console.KeyAvailable)
-                {
-                    Console.Clear();
-                    key = Console.ReadKey(true);
-                }
-                //cube.drawLine(0, 1, Offset);
-                //cube.drawLine(1, 2, Offset);
-                //cube.drawLine(2, 3, Offset);
-                //cube.drawLine(3, 0, Offset);
-                //cube.drawLine(4, 5, Offset);
-                //cube.drawLine(5, 6, Offset);
-                //cube.drawLine(6, 7, Offset);
-                //cube.drawLine(7, 4, Offset);
-                //cube.drawLine(0, 4, Offset);
-                //cube.drawLine(1, 5, Offset);
-                //cube.drawLine(2, 6, Offset);
-                //cube.drawLine(3, 7, Offset);
-                var ListToDisplay = cube.Edges;
-                //var ListToDisplay = cube.Edges.FindAll(x => float.Max(x.A.position.Z, x.B.position.Z) > 0);
-                cube.Rotate(Orientation.Y, Orientation.X, Orientation.Z);
-
-            // This line is not necessary, but it can be used to force the evaluation of the points if needed.
-
-                if (Console.KeyAvailable)
-                {
-                    float speed = 0.001f;
-                    float MoveSpeed = 3f;
-                    ConsoleKeyInfo key = Console.ReadKey(true);
-                    if (key.Key == ConsoleKey.D)
-                    {
-                        Orientation.X += speed;
-                    }
-                    else if (key.Key == ConsoleKey.A)
-                    {
-                        Orientation.X -= speed;
-                    }
-                    else if (key.Key == ConsoleKey.W)
-                    {
-                        Orientation.Y -= speed;
-                    }
-                    else if (key.Key == ConsoleKey.S)
-                    {
-                        Orientation.Y += speed;
-                    }
-                    else if (key.Key == ConsoleKey.Q)
-                    {
-                        Orientation.Z += speed;
-                    }
-                    else if (key.Key == ConsoleKey.E)
-                    {
-                        Orientation.Z -= speed;
-                    }
-                    else if (key.Key == ConsoleKey.Escape)
-                    {
-                        Orientation = new Vector3(0, 0, 0);
-                    }
-                    else if (key.Key == ConsoleKey.F)
-                    {
-                       cube.Fov += MoveSpeed;
-                    }
-                    else if (key.Key == ConsoleKey.G)
-                    {
-                        cube.Fov -= MoveSpeed;
-                    }
-                    else if (key.Key == ConsoleKey.RightArrow)
-                    {
-                        cube.Position.X += MoveSpeed;
-                    }
-                    else if (key.Key == ConsoleKey.LeftArrow)
-                    {
-                        cube.Position.X -= MoveSpeed;
-                    }
-                    else if (key.Key == ConsoleKey.UpArrow)
-                    {
-                        cube.Position.Y -= MoveSpeed;
-                    }
-                    else if (key.Key == ConsoleKey.DownArrow)
-                    {
-                        cube.Position.Y += MoveSpeed;
-                    }
-                    else if (key.Key == ConsoleKey.X)
-                    {
-                        cube.Position.Z += MoveSpeed;
-                    }
-                    else if (key.Key == ConsoleKey.Z)
-                    {
-                        cube.Position.Z -= MoveSpeed;
-                    }
-
-                }
-
-
-
-
-
-
-            Thread.Sleep(10);
-            //Console.ReadLine();
-            Console.Clear();
         }
 
-            }
 
 
 
 
         static void WriteAt(float x, float y)
         {
-            if(x > 0 && y > 0 && x < Console.BufferWidth && y < Console.BufferHeight)
+            if (x > 0 && y > 0 && x * 2 < Console.BufferWidth && y < Console.BufferHeight)
             {
                 Console.SetCursorPosition((int)x * 2, (int)y);
                 Console.Write("██");
             }
-            
+
 
         }
 
