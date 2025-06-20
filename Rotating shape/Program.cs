@@ -63,6 +63,89 @@ namespace Rotating_shape
                     p.position = rotatedPosition;
                 }
             }
+            public void Cube(Vector3 Size)
+            {
+                addPoint(-Size.X, -Size.Y, -Size.Z);
+                addPoint(Size.X, -Size.Y, -Size.Z);
+                addPoint(Size.X, Size.Y, -Size.Z);
+                addPoint(-Size.X, Size.Y, -Size.Z);
+                addPoint(-Size.X, -Size.Y, Size.Z);
+                addPoint(Size.X, -Size.Y, Size.Z);
+                addPoint(Size.X, Size.Y, Size.Z);
+                addPoint(-Size.X, Size.Y, Size.Z);
+
+                addEdge(0, 1);
+                addEdge(1, 2);
+                addEdge(2, 3);
+                addEdge(3, 0);
+                addEdge(4, 5);
+                addEdge(5, 6);
+                addEdge(6, 7);
+                addEdge(7, 4);
+                addEdge(0, 4);
+                addEdge(1, 5);
+                addEdge(2, 6);
+                addEdge(3, 7);
+            }
+
+            public void Sphere(Vector3 Size)
+            {
+                int sides = 10; // Number of segments in the sphere
+                for (int i = 0;i< sides; i ++)
+                {
+                    for (int j = 0; j < sides; j++)
+                    {
+                        float theta = (float)(i * Math.PI / 10);
+                        float phi = (float)(j * 2 * Math.PI / 10);
+
+                        float x = Size.X * (float)(Math.Sin(theta) * Math.Cos(phi));
+                        float y = Size.Y * (float)(Math.Sin(theta) * Math.Sin(phi));
+                        float z = Size.Z * (float)(Math.Cos(theta));
+
+                        addPoint(x, y, z);
+                    }
+                }
+                for (int i = 0; i < sides; i++)
+                {
+                    for (int j = 0; j < sides; j++)
+                    {
+                        int a = i * 10 + j;
+                        int b = i * 10 + (j + 1) % 10;
+                        int c = ((i + 1) % 10) * 10 + j;
+                        int d = ((i + 1) % 10) * 10 + (j + 1) % 10;
+
+                        addEdge(a, b);
+                        addEdge(b, d);
+                        addEdge(d, c);
+                        addEdge(c, a);
+                    }
+                }
+
+            }
+            public void Cube(float lenght)
+            {
+                addPoint(-lenght, -lenght, -lenght);
+                addPoint(lenght, -lenght, -lenght);
+                addPoint(lenght, lenght, -lenght);
+                addPoint(-lenght, lenght, -lenght);
+                addPoint(-lenght, -lenght, lenght);
+                addPoint(lenght, -lenght, lenght);
+                addPoint(lenght, lenght, lenght);
+                addPoint(-lenght, lenght, lenght);
+
+                addEdge(0, 1);
+                addEdge(1, 2);
+                addEdge(2, 3);
+                addEdge(3, 0);
+                addEdge(4, 5);
+                addEdge(5, 6);
+                addEdge(6, 7);
+                addEdge(7, 4);
+                addEdge(0, 4);
+                addEdge(1, 5);
+                addEdge(2, 6);
+                addEdge(3, 7);
+            }
 
             public void drawLine(int B, int A, Vector2 Offset)
             {
@@ -85,7 +168,7 @@ namespace Rotating_shape
                 //}
                 //if(b.Z < 0)
                 //{
-                   
+
                 //    Zb = Fov;
                 //}
                 //if (a.Z < 0)
@@ -166,10 +249,24 @@ namespace Rotating_shape
                 //}
                 WriteAt(Offset.X, Offset.Y); // Draw the origin point
 
-                foreach (Connection C in cube.Edges)
+                        foreach (Connection C in shape.Edges)
+                        {
+                            //if (C.A.position.Z > -lenght && C.B.position.Z > -lenght / 0.905)
+                            shape.drawLine(C, Offset);
+                        }
+
+                    }
+                });
+                printer.Start();
+            }
+
+            while (true)
+            {
+
+                if (Console.KeyAvailable)
                 {
-                    //if (C.A.position.Z > -lenght && C.B.position.Z > -lenght / 0.905)
-                        cube.drawLine(C, Offset);
+                    Console.Clear();
+                    key = Console.ReadKey(true);
                 }
                 //cube.drawLine(0, 1, Offset);
                 //cube.drawLine(1, 2, Offset);
@@ -267,6 +364,7 @@ namespace Rotating_shape
             Console.Clear();
         }
 
+            }
 
 
 
